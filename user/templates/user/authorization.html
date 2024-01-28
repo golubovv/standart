@@ -1,0 +1,17 @@
+{% extends 'payment/base.html' %}
+
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <p><label>{{ field.label}}</label>:</p>
+        <p>{{ field }}</p>
+        <p>{{ field.errors }}</p>
+    {% endfor %}
+
+    <button type="submit">Войти</button>
+</form>
+
+{% endblock %}

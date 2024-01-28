@@ -1,0 +1,60 @@
+{% extends 'payment/base.html' %}
+
+{% block content %}
+
+<a href="{% url 'payment_requests' %}">Заявки на оплату</a><br>
+
+<nav>
+    <form method="get" id="search_form">
+        {% csrf_token %}
+        {% for field in form %}
+
+        <p><label>{{ field.label }}</label>: {{field}}</p>
+        {{ field.errors }}
+
+        {% endfor %}
+    </form>
+</nav>
+
+<section id="requisites">
+    {% for requisites in requisites_list %}
+    <p>
+        {{ requisites.full_name }}<br>
+        {{ requisites.phone_number }}<br>
+        {{ requisites.tender_type }}<br>
+        {{ requisites.payment_limit }}
+    </p>
+    {% endfor %}
+</section>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#search_form').change(function () {
+            $.ajax({
+                data: $(this).serialize(),
+                url: "{% url 'get_requisites' %}",
+                success: function (requisites) {
+                    $('#requisites').empty()
+                    for(i in requisites) {
+                        let requisite = 
+                        `
+                        <p class='requisite'>
+                            ${requisites[i].full_name}<br>
+                            ${requisites[i].phone_number}<br>
+                            ${requisites[i].tender_type}<br>
+                            ${requisites[i].payment_limit}
+                        </p>
+                        `
+                        $('#requisites').append(requisite)
+                    }
+                },
+                error: function (requisites) {
+                    console.log(response.responseJSON.errors)
+                }
+            });
+            return false;
+        });
+    })
+</script>
+{% endblock %}

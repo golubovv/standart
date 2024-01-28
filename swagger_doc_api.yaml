@@ -1,0 +1,111 @@
+openapi: 3.0.0
+info: 
+  title: Тестовое задание от Standart
+  version: 1.0.0
+servers:
+  - url: 127.0.0.1/api/v1/
+    description: Dev server
+paths:
+  /create_invoice:
+    post:
+      summary: Метод создания заявки на оплату
+      tags:
+        - PaymentRequests
+      responses:
+        '200':
+          description: Заявка успешно создана
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    $ref: "#/components/schemas/PaymentRequest/properties/id"
+                  tender_type:
+                    $ref: "#/components/schemas/Requisites/properties/tender_type"
+                  full_name: 
+                    $ref: "#/components/schemas/Requisites/properties/full_name"
+                  phone_number: 
+                    $ref: "#/components/schemas/Requisites/properties/phone_number"
+                  payment_limit:
+                    $ref: "#/components/schemas/Requisites/properties/payment_limit"
+  /get_invoice_status/{payment_request_id}:
+    get:
+      summary: Метод получения статуса заявки на оплату по id
+      tags: 
+        - PaymentRequests
+      parameters:
+        - name: payment_request_id
+          in: path
+          description: Идентификатор заявки на оплату
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Заявка найдена и статус получен
+          content:
+            application/json:
+              schema:
+                properties:
+                  status:
+                    $ref: "#/components/schemas/PaymentRequest/properties/status"
+                  
+              
+components:
+  schemas:
+    PaymentRequest:
+      type: object
+      required:
+        - amount
+        - status
+        - requisites
+      properties:
+        id:
+          type: integer
+          example: 2
+        amount:
+          type: number
+          example: 299.99
+        status: 
+          type: string
+          enum: 
+            - waiting
+            - paid
+            - canceled
+        requisites:
+          type: object
+          example: 
+            $ref: "#/components/schemas/Requisites"
+    Requisites:
+      type: object
+      required:
+        - tender_type
+        - full_name
+        - phone_number
+        - payment_limit
+      properties:
+        id:
+          type: integer
+          example: 2
+        tender_type:
+          type: string
+          enum:
+            - debit_card
+            - credit_card
+            - prepaid_card
+            - overdraft_card
+            - current_account
+            - credit_account
+            - currency_account
+            - deposit_account
+        full_name:
+          type: string
+          example: Баженов Кирилл Сергеевич
+        phone_number:
+          type: string
+          example: +79922365454
+        payment_limit:
+          type: number
+          example: 100000.50
+          
+  

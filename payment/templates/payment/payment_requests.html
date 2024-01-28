@@ -1,0 +1,24 @@
+{% extends 'payment/base.html' %}
+
+{% block content %}
+<a href="{% url 'requisites' %}">Реквизиты</a><br>
+{% if request.user.is_authenticated %}
+<form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit">Выйти</button>
+</form>
+{% else %}
+<a href="{% url 'registration' %}">Регистрация</a><br>
+<a href="{% url 'authorization' %}">Вход</a>
+{% endif %}
+{% if request.user.is_superuser %}
+{% for payment_request in payment_requests %}
+    <p>{{ payment_request.requisites.full_name }}<br>
+    {{ payment_request.amount }}<br>
+    {{ payment_request.status }}</p>
+{% endfor %}
+{% else %}
+<h3>Только администраторы имеют доступ к заявкам на оплату</h3>
+{% endif %}
+
+{% endblock %}
